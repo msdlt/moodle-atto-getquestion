@@ -187,9 +187,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
                           $('#questionSelect').change(function(){
                             var str = "";
                             $( "select optgroup option:selected" ).each(function() {
-//                              console.log($(this));
                               str = "http://" + tld + url + "?cmid=" + cmid + "&category=" + $(this).attr('value') + restofajax;
-                              console.log("change1: " + str);
                               var changeAjax = $.ajax({url: str}).done(function () {
                                   var rhtml = changeAjax.responseJSON.contents;
                                   $('#questionTable').children().remove();

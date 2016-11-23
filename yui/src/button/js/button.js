@@ -73,6 +73,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
         }
 
         var twoicons = ['iconone', 'icontwo'];
+        var twoicons = ['iconone']; //, 'icontwo'];
 
         Y.Array.each(twoicons, function (theicon) {
             // Add the getquestion icon/buttons

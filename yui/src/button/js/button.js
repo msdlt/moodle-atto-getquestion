@@ -48,7 +48,7 @@ var TEMPLATE = '' +
     '<form class="atto_form">' +
     '<div id="{{elementid}}_{{innerform}}" class="mdl-align">' +
     '<label for="{{elementid}}_{{FLAVORCONTROL}}">{{get_string "enterflavor" component}}</label>' +
-    '<input style="display:none; " class="{{CSS.FLAVORCONTROL}}" id="{{elementid}}_{{FLAVORCONTROL}}"' +
+    '<input style="display:block; " class="{{CSS.FLAVORCONTROL}}" id="{{elementid}}_{{FLAVORCONTROL}}"' +
     ' name="{{elementid}}_{{FLAVORCONTROL}}" value="{{defaultflavor}}" />' +
     '<button class="{{CSS.INPUTSUBMIT}}">{{get_string "insert" component}}</button>' +
 //    '<select class="select searchoptions" id="id_selectacategory" name="category"></select>' +
@@ -66,14 +66,13 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
      *
      * @method Initializer
      */
-    initializer: function() {
+    initializer: function () {
         // If we don't have the capability to view then give up.
         if (this.get('disabled')) {
             return;
         }
 
         var twoicons = ['iconone', 'icontwo'];
-        var twoicons = ['iconone']; //, 'icontwo'];
 
         Y.Array.each(twoicons, function (theicon) {
             // Add the getquestion icon/buttons
@@ -124,7 +123,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
         //append buttons to iframe
         var buttonform = this._getFormContent (clickedicon);
 
-        var bodycontent =  Y.Node.create('<div></div>');
+        var bodycontent =  Y.Node.create('<div>bar</div>');
         bodycontent.append(buttonform);
 
         //set to bodycontent
@@ -143,6 +142,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
      * @private
      */
     _getFormContent: function (clickedicon) {
+      if (clickedicon === "iconone") {
         var template = Y.Handlebars.compile(TEMPLATE),
             content = Y.Node.create(template({
                 elementid: this.get('host').get('elementid'),
@@ -155,28 +155,22 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
 
             var bookid = window.location.href.split(/\=|\&|\?/),
                 tld = bookid[0].split(/\//)[2],
-                url = "/mod/quiz/questionbank.ajax.php"
-                category = "139%2C352",
+                url = "/mod/quiz/questionbank.ajax.php",
+//                category = "139%2C352",
                 cmid = bookid[2],
                 restofajax = "&recurse=0&showhidden=0", //&recurse=1
-                theurl = "http://" + tld + url + "?cmid=" + cmid + //"&category=" + category +
-                  restofajax;
+                theurl = "http://" + tld + url + "?cmid=" + cmid + restofajax; //"&category=" + category +
             console.log("start: " + theurl);
-
             var firstAjax = $.ajax({
                       url: theurl,
                       context: document.body
                   })
                       .done(function () {
-                          var rhtml = firstAjax.responseJSON.contents;
-// #questionSelect is in page.
-// inserts options into select box (question categories)
+                          var rhtml = firstAjax.responseJSON.contents; // #questionSelect is in page. inserts options into select box (question categories)
                           $('#questionSelect').append(
                             $('#id_selectacategory', rhtml).children()
                           );
-// #categoryquestions is in ajax
-// inserts list of questions from ajax into table
-                          $('#categoryquestions', rhtml).find('tbody label').each(
+                          $('#categoryquestions', rhtml).find('tbody label').each( // #categoryquestions is in ajax. inserts list of questions from ajax into table
                               function () {
                                 $('#questionTable').append(
                                   "<tr><td>" + "<label><input type='radio' name='questions' value='" +
@@ -193,6 +187,8 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
                                   var rhtml = changeAjax.responseJSON.contents;
                                   $('#questionTable').children().remove();
                                   $('#categoryquestions', rhtml).find('tbody label').each(function () {
+                                    //var questiontabledomobject = $('#questionTable');
+
                                         $('#questionTable').append(
                                           "<tr><td>" + "<label><input type='radio' name='questions' value='" +
                                           $(this).attr('for').replace('checkq', '') + "'/>" + "</td><td>" +
@@ -219,10 +215,10 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
                                 '"}';
                             $('#id_content_editor_getquestion_flavor').attr('value', questionid);
                             var newurl = "http://" + tld + url + "?cmid=" + cmid + "&category=" + questionid + restofajax;
-                            console.log("change2: " + newurl)
-                            })
+                            console.log("change2: " + newurl);
                           });
-                        })
+                          });
+                        });
                       })
                       .fail(function () {
                           console.log("error");
@@ -230,11 +226,42 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
                       .always(function () {
                           console.log("complete");
                       });
-//          });
-//  alert("ready");
         this._form = content;
         this._form.one('.' + CSS.INPUTSUBMIT).on('click', this._doInsert, this);
         return content;
+      } else if (clickedicon === "icontwo"){
+        var template2 = Y.Handlebars.compile(TEMPLATE),
+            content2 = Y.Node.create(template2({
+                elementid: this.get('host').get('elementid'),
+                CSS: CSS,
+                FLAVORCONTROL: FLAVORCONTROL,
+                component: COMPONENTNAME,
+                defaultflavor: this.get('defaultflavor'),
+                clickedicon: clickedicon
+            }));
+
+        this._form = content2;
+        this._form.one('.' + CSS.INPUTSUBMIT).on('click', this._doInsert, this);
+        var theContext = $('#id_content_editor_', content2._node);
+        theContext.ready(function () {
+          theContext.find('select').append(
+            '<optgroup required="true" label="optgroup_label">' +
+            '<option value="a" label="a_label">a_text</option>' +
+            '<option value="b" label="b_label" selected="yes">a_text</option>' +
+            '</optgroup>');
+            initVal = theContext.find('option[selected = "yes"]').attr('value');
+            console.log(theContext);
+            theContext.children('input').attr('value', initVal);
+            theContext.find('select').on("click", function () {
+              console.log(this);
+              var questionid = '{GENERICO:type="insert_question",questionid="' +
+              $(this).find('option').attr('value') +
+              '"}';
+              alert('qid: ' + questionid);
+              $('#id_content_editor_getquestion_flavor').attr('value', questionid);});
+            });
+            return content2;
+      } //else {}
     },
 
     /**

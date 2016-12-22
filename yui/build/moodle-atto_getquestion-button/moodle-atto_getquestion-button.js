@@ -245,23 +245,31 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
         this._form = content2;
         this._form.one('.' + CSS.INPUTSUBMIT).on('click', this._doInsert, this);
         var theContext = $('#id_content_editor_', content2._node);
-        theContext.ready(function () {
+//        theContext.ready(function () {
           theContext.find('select').append(
-            '<optgroup required="true" label="optgroup_label">' +
-            '<option value="a" label="a_label">a_text</option>' +
-            '<option value="b" label="b_label" selected="yes">a_text</option>' +
-            '</optgroup>');
-            initVal = theContext.find('option[selected = "yes"]').attr('value');
-            console.log(theContext);
+            '<optgroup required="true" label="Blocks">' +
+            '<option value="to_do_block" label="To block" selected="yes" />' +
+            '<option value="note_block" label="Note block" />' +
+            '<option value="blockquote_block" label="Quotation or inset block" />' +
+            '<option value="syllabus_block" label="Syllabus note block" />' +
+            '</optgroup>' +
+            '<optgroup label="Titles with Icons">' +
+            '<option value="syllabus_block" data-x="fa-crosshairs" label="Syllabus title" />' +
+            '</optgroup>'
+          );
+            var optValue = theContext.find('option:selected').attr('value');
+            initVal = '{GENERICO:type="' + optValue + '"}<br />{GENERICO:type="' + optValue + '_end"}';
+//            console.log(theContext);
             theContext.children('input').attr('value', initVal);
-            theContext.find('select').on("click", function () {
-              console.log(this);
-              var questionid = '{GENERICO:type="insert_question",questionid="' +
-              $(this).find('option').attr('value') +
-              '"}';
-              alert('qid: ' + questionid);
-              $('#id_content_editor_getquestion_flavor').attr('value', questionid);});
-            });
+            theContext.find('select').change(function () {
+              insert_text = '';
+//              console.log(this);
+              var optValue = $(this).find('option:selected').attr('value'),
+              abcValue = $(this).find('option:selected').attr('data-x'),
+              insert_text = '{GENERICO:type="' + optValue + '", icon="' + abcValue + '"}<br />{GENERICO:type="' + optValue + '_end"}';
+//              alert('qid: ' + insert_text);
+              $('#id_content_editor_getquestion_flavor').attr('value', insert_text);});
+    //        });
             return content2;
       } //else {}
     },

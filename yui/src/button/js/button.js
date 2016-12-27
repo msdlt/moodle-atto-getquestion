@@ -48,14 +48,14 @@ var TEMPLATE = '' +
     '<form class="atto_form">' +
     '<div id="{{elementid}}_{{innerform}}" class="mdl-align">' +
     '<label for="{{elementid}}_{{FLAVORCONTROL}}">{{get_string "enterflavor" component}}</label>' +
-    '<input style="display:block; " class="{{CSS.FLAVORCONTROL}}" id="{{elementid}}_{{FLAVORCONTROL}}"' +
+    '<input style="display:none; " class="{{CSS.FLAVORCONTROL}}" id="{{elementid}}_{{FLAVORCONTROL}}"' +
     ' name="{{elementid}}_{{FLAVORCONTROL}}" value="{{defaultflavor}}" />' +
     '<button class="{{CSS.INPUTSUBMIT}}">{{get_string "insert" component}}</button>' +
 //    '<select class="select searchoptions" id="id_selectacategory" name="category"></select>' +
     '<select id="questionSelect"></select>' +
     '<table id="questionTable" class="table table-bordered"></table>' +
     '</div>' +
-    'icon: {{clickedicon}}'  +
+//    'icon: {{clickedicon}}'  +
     '</form>';
 
 Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_atto.EditorPlugin, [], {
@@ -72,7 +72,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
             return;
         }
 
-        var twoicons = ['iconone', 'icontwo'];
+        var twoicons = ['iconone']; //, 'icontwo'];
 
         Y.Array.each(twoicons, function (theicon) {
             // Add the getquestion icon/buttons
@@ -123,7 +123,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
         //append buttons to iframe
         var buttonform = this._getFormContent (clickedicon);
 
-        var bodycontent =  Y.Node.create('<div>bar</div>');
+        var bodycontent =  Y.Node.create('<div></div>');
         bodycontent.append(buttonform);
 
         //set to bodycontent
@@ -229,47 +229,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
         this._form = content;
         this._form.one('.' + CSS.INPUTSUBMIT).on('click', this._doInsert, this);
         return content;
-      } else if (clickedicon === "icontwo"){
-        var template2 = Y.Handlebars.compile(TEMPLATE),
-            content2 = Y.Node.create(template2({
-                elementid: this.get('host').get('elementid'),
-                CSS: CSS,
-                FLAVORCONTROL: FLAVORCONTROL,
-                component: COMPONENTNAME,
-                defaultflavor: this.get('defaultflavor'),
-                clickedicon: clickedicon
-            }));
-
-        this._form = content2;
-        this._form.one('.' + CSS.INPUTSUBMIT).on('click', this._doInsert, this);
-        var theContext = $('#id_content_editor_', content2._node);
-//        theContext.ready(function () {
-          theContext.find('select').append(
-            '<optgroup required="true" label="Blocks">' +
-            '<option value="to_do_block" label="To block" selected="yes" />' +
-            '<option value="note_block" label="Note block" />' +
-            '<option value="blockquote_block" label="Quotation or inset block" />' +
-            '<option value="syllabus_block" label="Syllabus note block" />' +
-            '</optgroup>' +
-            '<optgroup label="Titles with Icons">' +
-            '<option value="syllabus_block" data-x="fa-crosshairs" label="Syllabus title" />' +
-            '</optgroup>'
-          );
-            var optValue = theContext.find('option:selected').attr('value');
-            initVal = '{GENERICO:type="' + optValue + '"}<br />{GENERICO:type="' + optValue + '_end"}';
-//            console.log(theContext);
-            theContext.children('input').attr('value', initVal);
-            theContext.find('select').change(function () {
-              insert_text = '';
-//              console.log(this);
-              var optValue = $(this).find('option:selected').attr('value'),
-              abcValue = $(this).find('option:selected').attr('data-x'),
-              insert_text = '{GENERICO:type="' + optValue + '", icon="' + abcValue + '"}<br />{GENERICO:type="' + optValue + '_end"}';
-//              alert('qid: ' + insert_text);
-              $('#id_content_editor_getquestion_flavor').attr('value', insert_text);});
-    //        });
-            return content2;
-      } //else {}
+      }  //else {}
     },
 
     /**

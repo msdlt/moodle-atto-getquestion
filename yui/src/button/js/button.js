@@ -159,7 +159,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
 //                category = "139%2C352",
                 cmid = bookid[2],
                 restofajax = "&recurse=0&showhidden=0", //&recurse=1
-                theurl = "http://" + tld + url + "?cmid=" + cmid + restofajax; //"&category=" + category +
+                theurl = "https://" + tld + url + "?cmid=" + cmid + restofajax; //"&category=" + category +
             console.log("start: " + theurl);
             var firstAjax = $.ajax({
                       url: theurl,
@@ -182,7 +182,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
                           $('#questionSelect').change(function(){
                             var str = "";
                             $( "select optgroup option:selected" ).each(function() {
-                              str = "http://" + tld + url + "?cmid=" + cmid + "&category=" + $(this).attr('value') + restofajax;
+                              str = "https://" + tld + url + "?cmid=" + cmid + "&category=" + $(this).attr('value') + restofajax;
                               var changeAjax = $.ajax({url: str}).done(function () {
                                   var rhtml = changeAjax.responseJSON.contents;
                                   $('#questionTable').children().remove();
@@ -214,7 +214,7 @@ Y.namespace('M.atto_getquestion').Button = Y.Base.create('button', Y.M.editor_at
                                 $(this).children('input').attr('value') +
                                 '"}';
                             $('#id_content_editor_getquestion_flavor').attr('value', questionid);
-                            var newurl = "http://" + tld + url + "?cmid=" + cmid + "&category=" + questionid + restofajax;
+                            var newurl = "https://" + tld + url + "?cmid=" + cmid + "&category=" + questionid + restofajax;
                             console.log("change2: " + newurl);
                           });
                           });
